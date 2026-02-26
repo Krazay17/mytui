@@ -1,0 +1,1 @@
+gcc src/*.c src/core/*.c -Isrc -lwinmm -static -o soundboard.exe
