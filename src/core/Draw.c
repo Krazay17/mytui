@@ -1,25 +1,31 @@
 #include "Draw.h"
+#include "App.h"
 #include <stdio.h>
 #include <windows.h>
 
-void sol_draw(int sel)
+void sol_draw(Menu *menu, int selX, int selY)
 {
     HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleCursorPosition(h, (COORD){0, 2});
 
-    /* build frame in memory */
-    char buf[256];
-    int len = sprintf(buf,
-                      "  Make your choice:\n\n"
-                      "  %s[ Chicken and Corn ]%s"
-                      "   "
-                      "%s[ Whip ]%s"
-                      "\n\n  q: quit\n",
-                      sel == 0 ? "\033[42m" : "", sel == 0 ? "\033[0m" : "",
-                      sel == 1 ? "\033[7m" : "", sel == 1 ? "\033[0m" : "");
+    for (int y = 0; y < menu->rows; y++)
+    {
+        printf("  ");
+        for (int x = 0; x < menu->cols; x++)
+        {
+            int index = (y * menu->cols) + x;
+            MenuItem item = menu->items[index];
 
-    /* move cursor home, then overwrite in one call — no clearing */
-    COORD pos = {0, 0};
-    SetConsoleCursorPosition(h, pos);
-    DWORD written;
-    WriteConsoleA(h, buf, len, &written, NULL);
+            if (x == selX && y == selY)
+            {
+                // Highlighted
+                printf("\033[42m[ %-8s ]\033[0m  ", item.label);
+            }
+            else
+            {
+                printf("[ %-8s ]  ", item.label);
+            }
+        }
+        printf("\n\n");
+    }
 }
